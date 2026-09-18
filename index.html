@@ -23,20 +23,36 @@
 </head>
 <body>
   <div id="loading"><div><img src="./icon-512.png" alt="Punish Concept">GESTION ÉVÉNEMENTS</div></div>
+
   <iframe
     id="app"
     title="Punish Concept — Gestion Événements"
     src="https://script.google.com/macros/s/AKfycbyI2U-n0zBA6Db1zb7gyJTawqYOgLkUfexNAgX1Mj2b-nqShmCKRZqBCDAQwXkf297s/exec"
     allow="camera; microphone; clipboard-read; clipboard-write"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-downloads"
     referrerpolicy="no-referrer-when-downgrade">
   </iframe>
+
   <script>
-    const frame=document.getElementById('app');
-    const loading=document.getElementById('loading');
-    frame.addEventListener('load',()=>{loading.style.display='none';});
-    setTimeout(()=>{loading.style.display='none';},8000);
-    if('serviceWorker' in navigator){
-      window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+    const frame = document.getElementById('app');
+    const loading = document.getElementById('loading');
+
+    frame.addEventListener('load', () => {
+      loading.style.display = 'none';
+    });
+
+    setTimeout(() => {
+      loading.style.display = 'none';
+    }, 8000);
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const reg of regs) await reg.unregister();
+          await navigator.serviceWorker.register('./service-worker.js', {scope:'./'});
+        } catch (e) {}
+      });
     }
   </script>
 </body>
