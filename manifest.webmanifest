@@ -1,12 +1,13 @@
 {
   "name": "Punish Concept — Gestion Événements",
-  "short_name": "Punish Concept",
+  "short_name": "Gestion Events",
   "description": "Gestion des événements Punish Concept",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#050505",
-  "theme_color": "#050505",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "orientation": "portrait-primary",
   "icons": [
     {
