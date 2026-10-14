@@ -36,32 +36,28 @@ const ADMIN_LOCK_KEY='punish_gestion_admin_lock';
 const p=new URLSearchParams(location.search);
 const supplied=(p.get('access')||'').trim();
 const adminBootstrap=p.get('admin')==='1';
-
 let access='';
 
-/*
-  Sécurisation du profil ADMIN :
-  - Le lien ADMIN doit être ouvert une fois avec &admin=1.
-  - Son token est alors conservé séparément.
-  - Tant que ce verrou ADMIN existe, un lien organisateur ouvert sur cet appareil
-    ne peut plus écraser l'accès ADMIN mémorisé.
-  - Aucun token ADMIN n'est écrit en dur dans ce fichier.
-*/
-if(adminBootstrap && supplied){
-  localStorage.setItem(ADMIN_ACCESS_KEY,supplied);
-  localStorage.setItem(ADMIN_LOCK_KEY,'1');
-  localStorage.setItem(ACCESS_KEY,supplied);
+// Un lien explicite est toujours utilisé pour CETTE ouverture.
+// Il ne remplace jamais le token ADMIN enregistré, sauf si l'utilisateur
+// active volontairement le mode ADMIN avec &admin=1.
+if(supplied){
   access=supplied;
+  if(adminBootstrap){
+    // IMPORTANT : &admin=1 n'est PAS une preuve de droits administrateur.
+    // L'authentification reste vérifiée côté Apps Script.
+    localStorage.setItem(ADMIN_ACCESS_KEY,supplied);
+    localStorage.setItem(ADMIN_LOCK_KEY,'1');
+  }else if(localStorage.getItem(ADMIN_LOCK_KEY)!=='1'){
+    localStorage.setItem(ACCESS_KEY,supplied);
+  }
 }else if(localStorage.getItem(ADMIN_LOCK_KEY)==='1' && localStorage.getItem(ADMIN_ACCESS_KEY)){
   access=localStorage.getItem(ADMIN_ACCESS_KEY)||'';
-  localStorage.setItem(ACCESS_KEY,access);
-}else if(supplied){
-  localStorage.setItem(ACCESS_KEY,supplied);
-  access=supplied;
 }else{
   access=localStorage.getItem(ACCESS_KEY)||'';
 }
 
+// Ne pas conserver le token dans l'historique visible.
 if(supplied || adminBootstrap){
   history.replaceState(null,'',location.pathname);
 }
