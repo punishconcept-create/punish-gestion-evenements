@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <title>Gestion Événements</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 22px 18px;
+      border-bottom: 1px solid #303030;
+    }
+    h1 { font-size: 22px; margin: 0; }
+    .subtitle { color: #aaa; margin-top: 8px; }
+    main { padding: 18px; max-width: 900px; margin: auto; }
+    .card {
+      background: #171717;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 14px;
+    }
+    .card h2 { font-size: 18px; margin-top: 0; }
+    .muted { color: #aaa; }
+    .status { color: #7ed7a1; }
+    button {
+      background: #fff;
+      color: #000;
+      border: 0;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:focus-visible {
+      outline: 3px solid #7ed7a1;
+      outline-offset: 3px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GESTION ÉVÉNEMENTS</h1>
+    <div class="subtitle">Nouvelle application — Version de développement</div>
+  </header>
+
+  <main>
+    <section id="dashboard">
+      <div class="card">
+        <h2>Tableau de bord</h2>
+        <p class="status">Interface de test opérationnelle</p>
+        <p class="muted">Les données réelles ne sont pas encore connectées.</p>
+      </div>
+
+      <div class="card">
+        <h2>Mes événements</h2>
+        <p class="muted">Aucun événement de démonstration.</p>
+        <button type="button" onclick="navigate('event')">
+          Ouvrir un événement test
+        </button>
+      </div>
+    </section>
+
+    <section id="event" class="hidden">
+      <div class="card">
+        <h2>Événement test</h2>
+        <p class="muted">La navigation fonctionne sans Google Apps Script.</p>
+        <button type="button" onclick="history.back()">
+          Retour au tableau de bord
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function render() {
+      const page = history.state?.page === 'event'
+        ? 'event'
+        : 'dashboard';
+
+      document.getElementById('dashboard')
+        .classList.toggle('hidden', page !== 'dashboard');
+
+      document.getElementById('event')
+        .classList.toggle('hidden', page !== 'event');
+    }
+
+    function navigate(page) {
+      history.pushState({ page }, '', '#' + page);
+      render();
+    }
+
+    window.addEventListener('popstate', render);
+
+    history.replaceState({ page: 'dashboard' }, '', location.pathname);
+    render();
+  </script>
+</body>
+</html>
